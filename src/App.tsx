@@ -17,23 +17,18 @@ interface ModelConfig {
 }
 
 const MODELS: Record<string, ModelConfig> = {
-  'ltx-video': {
-    id: 'ltx-video',
-    name: 'Lightricks LTX Video',
-    description: 'Fast, high-quality video generation',
-    version: '8c47da666861d081eeb4d1261853087de23923a268a69b63febdf5dc1dee08e4',
-    endpoint: '/api/replicate/predictions',
+  'ltx-2-fast': {
+    id: 'ltx-2-fast',
+    name: 'Lightricks LTX-2 Fast',
+    description: 'Instant, high-quality video generation',
+    endpoint: '/api/replicate/models/lightricks/ltx-2-fast/predictions',
     defaultGuidance: 3.0,
-    payloadBuilder: (prompt, { version, guidanceScale }) => ({
-      version,
+    payloadBuilder: (prompt, { guidanceScale }) => ({
       input: {
         prompt,
         aspect_ratio: "16:9",
         negative_prompt: "low quality, worst quality, deformed, distorted, watermark",
         guidance_scale: guidanceScale,
-        // LTX uses num_inference_steps, we can default or expose it later. 
-        // Keeping it simple for now or hardcoding a 'high quality' default if user wants better accuracy.
-        // num_inference_steps: 40 
       }
     })
   },
@@ -56,7 +51,7 @@ const MODELS: Record<string, ModelConfig> = {
 };
 
 export default function TextToVideoGenerator() {
-  const [selectedModelId, setSelectedModelId] = useState<keyof typeof MODELS>('ltx-video');
+  const [selectedModelId, setSelectedModelId] = useState<keyof typeof MODELS>('ltx-2-fast');
   const [inputText, setInputText] = useState('');
   const [videoUrl, setVideoUrl] = useState('');
   const [loading, setLoading] = useState(false);
@@ -65,7 +60,7 @@ export default function TextToVideoGenerator() {
 
   // Advanced Settings State
   const [showAdvanced, setShowAdvanced] = useState(false);
-  const [guidanceScale, setGuidanceScale] = useState(MODELS['ltx-video'].defaultGuidance);
+  const [guidanceScale, setGuidanceScale] = useState(MODELS['ltx-2-fast'].defaultGuidance);
   const [enhancePrompt, setEnhancePrompt] = useState(true);
 
   // Update default guidance when model changes
@@ -188,12 +183,12 @@ export default function TextToVideoGenerator() {
                 key={model.id}
                 onClick={() => handleModelChange(model.id as keyof typeof MODELS)}
                 className={`p-4 rounded-lg border-2 text-left transition-all ${selectedModelId === model.id
-                    ? 'border-white bg-gray-900'
-                    : 'border-gray-800 bg-gray-950 hover:border-gray-600'
+                  ? 'border-white bg-gray-900'
+                  : 'border-gray-800 bg-gray-950 hover:border-gray-600'
                   }`}
               >
                 <div className="flex items-center gap-3 mb-2">
-                  {model.id === 'ltx-video' ? <Video className="w-5 h-5" /> : <Sparkles className="w-5 h-5" />}
+                  {model.id === 'ltx-2-fast' ? <Video className="w-5 h-5" /> : <Sparkles className="w-5 h-5" />}
                   <span className="font-semibold">{model.name}</span>
                 </div>
                 <p className="text-sm text-gray-400">{model.description}</p>
